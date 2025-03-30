@@ -13,7 +13,7 @@ def cart_page():
 
 @app.route('/profile')
 def profile_page():
-    pass
+    return render_template('profile.html')
 
 @app.route('/demo')          #демонстрация товара
 def demo_page():
