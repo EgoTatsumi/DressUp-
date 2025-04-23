@@ -1,0 +1,29 @@
+<!-- templates/partials/navbar.html -->
+<nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Second navbar example">
+  <div class="container-fluid">
+    <a class="navbar-brand fs-3" href="{{ url_for('main_page') }}">DressUp</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExample02">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link fs-5 {{ 'active' if request.endpoint == 'main_page' }}"
+             href="{{ url_for('main_page') }}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fs-5 {{ 'active' if request.endpoint == 'cart' }}"
+             href="{{ url_for('cart') }}">Cart</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fs-5 {{ 'active' if request.endpoint == 'profile' }}"
+             href="{{ url_for('profile') }}">My account</a>
+        </li>
+      </ul>
+      <form role="search">
+        <input class="form-control fs-6" type="search" placeholder="Search" aria-label="Search">
+      </form>
+    </div>
+  </div>
+</nav>
