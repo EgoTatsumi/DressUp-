@@ -1,7 +1,7 @@
 from flask import Flask, url_for, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
-from data import Product, User
+from data import Product, User, db
 import requests
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,10 +10,15 @@ import re
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app.config['SECRET_KEY'] = 'u398hf@8euf98h23r9fuh23rh9fuh23rhf'
+# import os
+# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key')
+
+db.init_app(app)
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
+
 @app.route("/")
 def main_page():
     products = db.session.execute(
@@ -35,6 +40,7 @@ def profile():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 with app.app_context():
     db.create_all()
@@ -60,8 +66,8 @@ def register():
             flash('Email уже используется.')
             return redirect(url_for('register'))
 
-        hashed_password = generate_password_hash(password, method='sha256')
-        new_user = User(username=username, email=email, password=hashed_password)
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        new_user = User(name=username, email=email, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         flash('Успешная регистрация. Войдите в аккаунт.')
