@@ -1,14 +1,13 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 <head>
+  <script src="../static/js/color-modes.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DressUP · Register</title>
   <link href="../static/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      background-color: #f8f9fa;
-    }
+
     .form-register {
       max-width: 400px;
       padding: 15px;
@@ -17,34 +16,28 @@
     .form-register .form-floating:focus-within {
       z-index: 2;
     }
+    .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+
   </style>
 </head>
 <body>
-<nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Second navbar example">
-    <div class="container-fluid">
-      <a class="navbar-brand fs-3" href="#">DressUp</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarsExample02">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link active fs-5" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fs-5" href="#">Cart</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fs-5" href="#">Favourites</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fs-5" href="">My account</a>
-          </li>
-          </ul>
-      </div>
-    </div>
-  </nav>
+     {% include 'partials/navbar.html' %}
+     {% include 'partials/theme_switcher.html' %}
 
 <main class="form-register mt-5">
   <form method="POST">

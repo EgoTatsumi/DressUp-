@@ -4,15 +4,8 @@
     <script src="../static/js/color-modes.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.122.0">
     <title>DressUP</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/carousel/">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -53,40 +46,27 @@
       .out-of-stock {
         color: #dc3545;
       }
-    </style>
+      .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
 
-    <link href="../static/css/carousel.css" rel="stylesheet">
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+    </style>
   </head>
   <body>
     {% include 'partials/theme_switcher.html' %}
-
-    <!-- Исправленный Navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
-      <div class="container-fluid">
-        <a class="navbar-brand fs-3" href="#">DressUp</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
-            <li class="nav-item">
-              <a class="nav-link active fs-5" href="/">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fs-5" href="/cart">Cart</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fs-5" href="/profile">My Account</a>
-            </li>
-          </ul>
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-light" type="submit">Search</button>
-          </form>
-        </div>
-      </div>
-    </nav>
-
+    {% include 'partials/navbar.html' %}
     <main>
       <div class="container mt-5">
         <!-- Карточки товаров -->
@@ -131,9 +111,7 @@
         </div>
 
         <!-- Детали продукта (featurette) -->
-        <hr class="featurette-divider my-5">
-
-        <div class="row featurette">
+        <div class="row featurette mt-5">
           <div class="col-md-7">
             <h2 class="featurette-heading fw-normal lh-1">Featured Product</h2>
             <p class="lead">Premium quality materials with exclusive design. Perfect for any occasion.</p>
