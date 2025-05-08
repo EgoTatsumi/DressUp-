@@ -32,10 +32,27 @@ def cart():
     return render_template('cart.html')
 
 
-@app.route("/profile")
+@app.route("/profile", methods=['GET', 'POST'])
 def profile():
-    return render_template('profile.html')
+    user = User.query.first()
 
+    if not user:
+        flash('No user data found in database', 'error')
+        return redirect(url_for('some_other_page'))
+
+    if request.method == 'POST':
+        user.first_name = request.form['firstName']
+        user.last_name = request.form['lastName']
+        user.city = request.form['city']
+        user.address = request.form['address']
+        user.email = request.form['email']
+        user.phone = request.form['phone']
+
+        db.session.commit()
+        flash('Your information has been updated!', 'success')
+        return redirect(url_for('profile'))
+
+    return render_template('profile.html', user=user)
 
 @login_manager.user_loader
 def load_user(user_id):
