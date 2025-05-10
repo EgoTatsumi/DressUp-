@@ -127,73 +127,30 @@
                     <span class="badge bg-primary rounded-pill float-end">3</span>
                   </h4>
                 </div>
+                {% for product in cart_list %}
+<ul class="list-group list-group-flush">
+  <li class="list-group-item" data-product-id="{{ product['id'] }}">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="product-info">
+        <img src="{{ url_for('static', filename='images/' + product['image']) }}" alt="Product image" class="product-img">
+        <div>
+          <h6 class="my-0">{{ product["name"] }}</h6>
+          <small class="text-body-secondary">{{ product["description"] }}</small>
+          <div class="quantity-control">
+            <button class="btn btn-sm btn-outline-secondary">-</button>
+            <input type="text" class="form-control form-control-sm" value="{{ product['quantity'] }}">
+            <button class="btn btn-sm btn-outline-secondary">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="text-end">
+        <span class="fw-bold">${{ product['price'] }}</span>
+        <div class="remove-item" title="Remove item">×</div>
+      </div>
+    </div>
+  </li>
+{% endfor %}
 
-                <ul class="list-group list-group-flush">
-                  <!-- Item 1 -->
-                  <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="product-info">
-                        <img src="../static/images/sneakers.jpg" alt="Product image" class="product-img">
-                        <div>
-                          <h6 class="my-0">Sneakers</h6>
-                          <small class="text-body-secondary">Floral pattern, size M</small>
-                          <div class="quantity-control">
-                            <button class="btn btn-sm btn-outline-secondary">-</button>
-                            <input type="text" class="form-control form-control-sm" value="1">
-                            <button class="btn btn-sm btn-outline-secondary">+</button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="text-end">
-                        <span class="fw-bold">$39.99</span>
-                        <div class="remove-item" title="Remove item">×</div>
-                      </div>
-                    </div>
-                  </li>
-
-                  <!-- Item 2 -->
-                  <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="product-info">
-                        <img src="../static/images/tshirt.jpg" alt="Product image" class="product-img">
-                        <div>
-                          <h6 class="my-0">T-shirt</h6>
-                          <small class="text-body-secondary">White, size L</small>
-                          <div class="quantity-control">
-                            <button class="btn btn-sm btn-outline-secondary">-</button>
-                            <input type="text" class="form-control form-control-sm" value="1">
-                            <button class="btn btn-sm btn-outline-secondary">+</button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="text-end">
-                        <span class="fw-bold">$9.99</span>
-                        <div class="remove-item" title="Remove item">×</div>
-                      </div>
-                    </div>
-                  </li>
-
-                  <!-- Item 3 -->
-                  <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="product-info">
-                        <img src="../static/images/jeans.jpg" alt="Product image" class="product-img">
-                        <div>
-                          <h6 class="my-0">Casual Jeans</h6>
-                          <small class="text-body-secondary">White, size 42</small>
-                          <div class="quantity-control">
-                            <button class="btn btn-sm btn-outline-secondary">-</button>
-                            <input type="text" class="form-control form-control-sm" value="1">
-                            <button class="btn btn-sm btn-outline-secondary">+</button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="text-end">
-                        <span class="fw-bold">$19.99</span>
-                        <div class="remove-item" title="Remove item">×</div>
-                      </div>
-                    </div>
-                  </li>
 
                   <!-- Promo code -->
                   <li class="list-group-item d-flex justify-content-between bg-light">
@@ -238,7 +195,7 @@
 
     <script src="../static/js/bootstrap.bundle.min.js"></script>
     <script src="../static/js/checkout.js"></script>
-  <script>
+ <script>
 document.addEventListener("DOMContentLoaded", function () {
   const DISCOUNT_CODE = "SUMMER20";
   let discountApplied = false;
@@ -270,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     total = Math.max(total, 0);
-    document.querySelector("li:last-child strong").textContent = `$${total.toFixed(2)}`;
+    document.querySelector("li:last-child strong").textContent = $${total.toFixed(2)};
   }
 
   // Обработчики + и -
@@ -330,6 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
   updateCartTotal();
 });
 </script>
+
 
   </body>
 </html>

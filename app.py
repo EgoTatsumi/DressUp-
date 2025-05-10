@@ -21,6 +21,24 @@ login_manager.init_app(app)
 
 cart_list = {}
 
+def get_products_with_quantity(product_dict):
+    product_ids = list(product_dict.keys())
+
+    products = Product.query.filter(Product.id.in_(product_ids)).all()
+
+    result = []
+    for product in products:
+        result.append({
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": round(product.price, 2),
+            "image": product.image,
+            "quantity": product_dict.get(product.id, 0)
+        })
+
+    return result
+
 
 @app.route("/")
 def main_page():
@@ -42,7 +60,7 @@ def add_to_cart():
 
 @app.route('/cart')
 def cart():
-    return render_template('cart.html')
+    return render_template('cart.html', cart_list=get_products_with_quantity(cart_list))
 
 
 @app.route("/profile", methods=['GET', 'POST'])
