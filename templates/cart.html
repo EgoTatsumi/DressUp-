@@ -145,7 +145,7 @@
                         </div>
                       </div>
                       <div class="text-end">
-                        <span class="fw-bold">$12.99</span>
+                        <span class="fw-bold">$39.99</span>
                         <div class="remove-item" title="Remove item">×</div>
                       </div>
                     </div>
@@ -157,8 +157,8 @@
                       <div class="product-info">
                         <img src="../static/images/tshirt.jpg" alt="Product image" class="product-img">
                         <div>
-                          <h6 class="my-0">Denim Jacket</h6>
-                          <small class="text-body-secondary">Light blue, size L</small>
+                          <h6 class="my-0">T-shirt</h6>
+                          <small class="text-body-secondary">White, size L</small>
                           <div class="quantity-control">
                             <button class="btn btn-sm btn-outline-secondary">-</button>
                             <input type="text" class="form-control form-control-sm" value="1">
@@ -167,7 +167,7 @@
                         </div>
                       </div>
                       <div class="text-end">
-                        <span class="fw-bold">$24.99</span>
+                        <span class="fw-bold">$9.99</span>
                         <div class="remove-item" title="Remove item">×</div>
                       </div>
                     </div>
@@ -179,7 +179,7 @@
                       <div class="product-info">
                         <img src="../static/images/jeans.jpg" alt="Product image" class="product-img">
                         <div>
-                          <h6 class="my-0">Casual Sneakers</h6>
+                          <h6 class="my-0">Casual Jeans</h6>
                           <small class="text-body-secondary">White, size 42</small>
                           <div class="quantity-control">
                             <button class="btn btn-sm btn-outline-secondary">-</button>
@@ -189,7 +189,7 @@
                         </div>
                       </div>
                       <div class="text-end">
-                        <span class="fw-bold">$35.50</span>
+                        <span class="fw-bold">$19.99</span>
                         <div class="remove-item" title="Remove item">×</div>
                       </div>
                     </div>
@@ -238,5 +238,98 @@
 
     <script src="../static/js/bootstrap.bundle.min.js"></script>
     <script src="../static/js/checkout.js"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const DISCOUNT_CODE = "SUMMER20";
+  let discountApplied = false;
+
+  function parsePrice(priceStr) {
+    return parseFloat(priceStr.replace('$', ''));
+  }
+
+  function updateCartTotal() {
+    const itemElements = document.querySelectorAll(".list-group-item:not(.bg-light):not(:last-child)");
+    let total = 0;
+
+    itemElements.forEach(item => {
+      const priceText = item.querySelector(".fw-bold").textContent;
+      const unitPrice = parsePrice(priceText);
+
+      const qtyInput = item.querySelector(".quantity-control input");
+      const quantity = parseInt(qtyInput.value);
+
+      total += unitPrice * quantity;
+    });
+
+    if (discountApplied) {
+      total -= 5;
+      document.querySelector(".bg-light span").textContent = "−$5.00";
+      document.querySelector(".bg-light").style.display = "";
+    } else {
+      document.querySelector(".bg-light").style.display = "none";
+    }
+
+    total = Math.max(total, 0);
+    document.querySelector("li:last-child strong").textContent = `$${total.toFixed(2)}`;
+  }
+
+  // Обработчики + и -
+  document.querySelectorAll(".quantity-control").forEach(control => {
+    const minusBtn = control.querySelector("button:first-child");
+    const plusBtn = control.querySelector("button:last-child");
+    const input = control.querySelector("input");
+
+    minusBtn.addEventListener("click", () => {
+      let value = parseInt(input.value);
+      if (!isNaN(value) && value > 1) {
+        input.value = value - 1;
+        updateCartTotal();
+      }
+    });
+
+    plusBtn.addEventListener("click", () => {
+      let value = parseInt(input.value);
+      if (!isNaN(value)) {
+        input.value = value + 1;
+        updateCartTotal();
+      }
+    });
+
+    input.addEventListener("input", () => {
+      let value = parseInt(input.value);
+      if (isNaN(value) || value < 1) {
+        input.value = 1;
+      }
+      updateCartTotal();
+    });
+  });
+
+  document.querySelectorAll(".remove-item").forEach(button => {
+    button.addEventListener("click", () => {
+      const item = button.closest("li");
+      item.remove();
+      updateCartTotal();
+    });
+  });
+
+  const promoForm = document.querySelector("form.card");
+  promoForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const promoInput = this.querySelector("input");
+    const promoCode = promoInput.value.trim().toUpperCase();
+    if (promoCode === DISCOUNT_CODE) {
+      discountApplied = true;
+      alert("Промокод применён! Скидка $5.");
+    } else {
+      discountApplied = false;
+      alert("Неверный промокод.");
+    }
+    updateCartTotal();
+  });
+
+  updateCartTotal();
+});
+</script>
+
   </body>
 </html>

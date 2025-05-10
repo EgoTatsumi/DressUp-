@@ -134,7 +134,7 @@
               <p class="card-price">${{ "%.2f"|format(product.price) }}</p>
               <small class="card-text">{{ product.description }}</small>
               <div class="d-flex justify-content-center align-items-center" style="height: 60px;">
-                <button type="button" class="btn btn-sm btn-outline-secondary w-100">Buy</button>
+                <button type="button" onclick="addToCart({{ product.id }})" class="btn btn-sm btn-outline-secondary w-100">Buy</button>
               </div>
             </div>
           </div>
@@ -151,6 +151,25 @@
 
 
 <script src="../static/js/bootstrap.bundle.min.js"></script>
+  <script>
+function addToCart(productId) {
+    fetch('/add-to-cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        alert(data.message);
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+</script>
 
     </body>
 </html>

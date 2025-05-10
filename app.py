@@ -1,4 +1,4 @@
-from flask import Flask, url_for, render_template, request, redirect, flash
+from flask import Flask, url_for, render_template, request, redirect, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from data import Product, User, db
@@ -19,12 +19,25 @@ login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
 
+cart_list = {}
+
+
 @app.route("/")
 def main_page():
-    products = db.session.execute(
-        select(Product.id, Product.name, Product.price, Product.description, Product.image)
-    ).all()
+    products = Product.query.all()
     return render_template('index1.html', products=products)
+
+@app.route("/add-to-cart", methods=["POST"])
+def add_to_cart():
+    data = request.get_json()
+    print(f"Добавлено в корзину: {data}")
+    # Здесь можно добавить товар в сессию или БД
+    if cart_list.get(data['id']):
+        cart_list[data['id']] += 1
+    else:
+        cart_list[data['id']] = 1
+    print(cart_list)
+    return jsonify({"success": True, "message": "Товар добавлен в корзину"})
 
 
 @app.route('/cart')
@@ -53,6 +66,7 @@ def profile():
 
     return render_template('profile.html', user=user)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -60,6 +74,7 @@ def load_user(user_id):
 
 with app.app_context():
     db.create_all()
+
 
 # Регистрация
 @app.route('/register', methods=['GET', 'POST'])
@@ -91,6 +106,7 @@ def register():
 
     return render_template('register.html')
 
+
 # Вход
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -108,6 +124,7 @@ def login():
 
     return render_template('login.html')
 
+
 # Выход
 @app.route('/logout')
 @login_required
@@ -115,11 +132,13 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
 # Приватная страница
 @app.route('/dashboard')
 @login_required
 def dashboard():
     return f"Привет, {current_user.username}! Добро пожаловать в личный кабинет."
+
 
 @app.route("/demo/") #<int:index>
 def demo():
