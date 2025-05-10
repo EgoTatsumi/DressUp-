@@ -41,8 +41,7 @@ def profile():
         return redirect(url_for('some_other_page'))
 
     if request.method == 'POST':
-        user.first_name = request.form['firstName']
-        user.last_name = request.form['lastName']
+        user.name = request.form['full_name']
         user.city = request.form['city']
         user.address = request.form['address']
         user.email = request.form['email']
