@@ -62,7 +62,7 @@
               <div class="col-12">
                 <label for="fullName" class="form-label">Full name</label>
                 <input type="text" class="form-control" id="fullName" name="full_name"
-                       value="{% if user %}{{ user.first_name }} {{ user.last_name }}{% endif %}"
+                       value="{% if user %}{{ user.name }}{% endif %}"
                        placeholder="Your full name" required>
                 <div class="invalid-feedback">
                   Please enter your full name.

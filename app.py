@@ -65,25 +65,17 @@ def cart():
 
 @app.route("/profile", methods=['GET', 'POST'])
 def profile():
-    user = User.query.first()
-
-    if not user:
-        flash('No user data found in database', 'error')
-        return redirect(url_for('some_other_page'))
-
     if request.method == 'POST':
-        user.name = request.form['full_name']
-        user.city = request.form['city']
-        user.address = request.form['address']
-        user.email = request.form['email']
-        user.phone = request.form['phone']
-
+        current_user.name = request.form['full_name']
+        current_user.city = request.form['city']
+        current_user.address = request.form['address']
+        current_user.email = request.form['email']
+        current_user.phone = request.form['phone']
         db.session.commit()
         flash('Your information has been updated!', 'success')
         return redirect(url_for('profile'))
 
-    return render_template('profile.html', user=user)
-
+    return render_template('profile.html', user=current_user)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -155,7 +147,7 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return f"Привет, {current_user.username}! Добро пожаловать в личный кабинет."
+    return f"Привет, {current_user.name}! Добро пожаловать в личный кабинет."
 
 
 @app.route("/demo/") #<int:index>
