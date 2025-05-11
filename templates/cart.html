@@ -137,9 +137,13 @@
           <h6 class="my-0">{{ product["name"] }}</h6>
           <small class="text-body-secondary">{{ product["description"] }}</small>
           <div class="quantity-control">
+            <form action="{{ url_for('minus', id=product.id) }}" method="POST">
             <button class="btn btn-sm btn-outline-secondary">-</button>
+            </form>
             <input type="text" class="form-control form-control-sm" value="{{ product['quantity'] }}">
+            <form action="{{ url_for('plus', id=product.id) }}" method="POST">
             <button class="btn btn-sm btn-outline-secondary">+</button>
+            </form>
           </div>
         </div>
       </div>

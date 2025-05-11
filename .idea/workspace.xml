@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="194038bd-36cc-4722-9fa8-0c64db0b0b8a" name="Changes" comment="Моя недоделка">
+    <list default="true" id="194038bd-36cc-4722-9fa8-0c64db0b0b8a" name="Changes" comment="Почти доделка">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/instance/shop.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/shop.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cart.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +174,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746918210768</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Почти доделка">
+      <option name="closed" value="true" />
+      <created>1746992356154</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1746992356154</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -195,6 +203,7 @@
     <MESSAGE value="бд воркает" />
     <MESSAGE value="Добавил шаблоны" />
     <MESSAGE value="Моя недоделка" />
-    <option name="LAST_COMMIT_MESSAGE" value="Моя недоделка" />
+    <MESSAGE value="Почти доделка" />
+    <option name="LAST_COMMIT_MESSAGE" value="Почти доделка" />
   </component>
 </project>

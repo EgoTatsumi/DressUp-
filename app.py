@@ -135,6 +135,21 @@ def login():
     return render_template('login.html')
 
 
+@app.route('/plus-product/<int:id>', methods=['GET', 'POST'])
+def plus(id):
+    if request.method == 'POST':
+        cart_list[id] += 1
+    return render_template('cart.html', cart_list=get_products_with_quantity(cart_list), count=get_products_with_quantity(cart_list))
+
+
+@app.route('/minus-product/<int:id>', methods=['GET', 'POST'])
+def minus(id):
+    if request.method == 'POST':
+        if cart_list[id] > 1:
+            cart_list[id] -= 1
+    return render_template('cart.html', cart_list=get_products_with_quantity(cart_list))
+
+
 # Выход
 @app.route('/logout')
 @login_required
