@@ -64,6 +64,7 @@ def cart():
 
 
 @app.route("/profile", methods=['GET', 'POST'])
+@login_required
 def profile():
     if request.method == 'POST':
         current_user.name = request.form['full_name']
@@ -130,8 +131,7 @@ def login():
             return redirect(url_for('login'))
 
         login_user(user)
-        return redirect(url_for('dashboard'))
-
+        return render_template('registration_success.html')
     return render_template('login.html')
 
 
@@ -165,9 +165,10 @@ def dashboard():
     return f"Привет, {current_user.name}! Добро пожаловать в личный кабинет."
 
 
-@app.route("/demo/") #<int:index>
-def demo():
-    return render_template("demo.html")
+@app.route("/product_demo/<int:product_id>") #<int:index>
+def product_demo(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template("product_demo.html", product=product)
 
 
 if __name__ == "__main__":

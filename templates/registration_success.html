@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <script src="{{ url_for('static', filename='js/color-modes.js') }}"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Успешная регистрация - DressUP</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <style>
+        .success-container {
+            min-height: calc(100vh - 120px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        .success-icon {
+            font-size: 5rem;
+            color: var(--bs-success);
+            margin-bottom: 2rem;
+        }
+        .redirect-message {
+            margin-top: 2rem;
+            color: var(--bs-secondary-color);
+        }
+        .btn-bd-primary {
+            --bd-violet-bg: #712cf9;
+            --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+            --bs-btn-font-weight: 600;
+            --bs-btn-color: var(--bs-white);
+            --bs-btn-bg: var(--bd-violet-bg);
+            --bs-btn-border-color: var(--bd-violet-bg);
+            --bs-btn-hover-color: var(--bs-white);
+            --bs-btn-hover-bg: #6528e0;
+            --bs-btn-hover-border-color: #6528e0;
+            --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+            --bs-btn-active-color: var(--bs-btn-hover-color);
+            --bs-btn-active-bg: #5a23c8;
+            --bs-btn-active-border-color: #5a23c8;
+        }
+    </style>
+</head>
+<body class="bg-body-tertiary">
+    {% include 'partials/theme_switcher.html' %}
+    {% include 'partials/navbar.html' %}
+
+    <div class="container">
+        <div class="success-container">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+            </div>
+            <h2 class="text-success mb-3">Регистрация успешно завершена!</h2>
+            <p class="lead mb-4">Добро пожаловать в DressUP! Теперь вы можете войти в систему, используя свои учетные данные.</p>
+
+            <div class="card bg-body-tertiary border-success mb-3" style="max-width: 30rem;">
+                <div class="card-body text-center">
+                    <p class="card-text">Через <span id="countdown" class="fw-bold">3</span> секунды вы будете перенаправлены на главную страницу</p>
+                    <div class="mt-3">
+                        <a href="{{ url_for('main_page') }}" class="btn btn-bd-primary me-2">Перейти сейчас</a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-success">Войти в аккаунт</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script>
+        let seconds = 3;
+        const countdownElement = document.getElementById('countdown');
+
+        const timer = setInterval(() => {
+            seconds--;
+            countdownElement.textContent = seconds;
+
+            if (seconds <= 0) {
+                clearInterval(timer);
+                window.location.href = "{{ url_for('main_page') }}";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

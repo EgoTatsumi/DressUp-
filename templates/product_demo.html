@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <script src="{{ url_for('static', filename='js/color-modes.js') }}"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ product.name }} - DressUP</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --product-gap: 1.5rem;
+        }
+
+        .product-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-gallery {
+            position: relative;
+            margin-bottom: var(--product-gap);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .main-image {
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+            border-radius: 0.5rem;
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .main-image:hover {
+            transform: scale(1.01);
+        }
+
+        .thumbnail-container {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            border-radius: 0.35rem;
+            opacity: 0.8;
+        }
+
+        .thumbnail:hover, .thumbnail.active {
+            border-color: var(--bs-primary);
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .product-info-card {
+            background-color: var(--bs-body-bg);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            height: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .product-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .product-sku {
+            color: var(--bs-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .current-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--bs-primary);
+        }
+
+        .stock-badge {
+            font-size: 0.85rem;
+            padding: 0.35rem 0.75rem;
+        }
+
+        .product-description {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .option-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .option-title {
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .option-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .option-btn {
+            position: relative;
+        }
+
+        .option-btn input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .option-btn label {
+            display: block;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0.35rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .option-btn input:checked + label {
+            border-color: var(--bs-primary);
+            background-color: rgba(var(--bs-primary-rgb), 0.1);
+            color: var(--bs-primary);
+            font-weight: 500;
+        }
+
+        .option-btn label:hover {
+            border-color: var(--bs-primary);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--bs-border-color);
+            background: none;
+            border-radius: 0.35rem;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .quantity-btn:hover {
+            background-color: var(--bs-light);
+        }
+
+        .quantity-input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0.35rem;
+            font-weight: 500;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 0.75rem;
+            font-weight: 500;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .details-tabs .nav-link {
+            font-weight: 500;
+            color: var(--bs-secondary);
+            padding: 1rem 1.5rem;
+        }
+
+        .details-tabs .nav-link.active {
+            color: var(--bs-primary);
+            background: transparent;
+            border-bottom: 2px solid var(--bs-primary);
+        }
+
+        .details-content {
+            padding: 2rem;
+        }
+
+        .specs-table th {
+            width: 30%;
+            color: var(--bs-secondary);
+        }
+
+        .specs-table td {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .specs-table tr:not(:last-child) th,
+        .specs-table tr:not(:last-child) td {
+            border-bottom: 1px solid var(--bs-border-color);
+        }
+
+        @media (max-width: 992px) {
+            .main-image {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-image {
+                height: 350px;
+            }
+
+            .product-info-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-body-tertiary">
+    {% include 'partials/theme_switcher.html' %}
+    {% include 'partials/navbar.html' %}
+
+    <div class="product-container py-5">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main_page') }}">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+
+        <div class="row g-4">
+            <!-- Галерея товара -->
+            <div class="col-lg-6">
+                <div class="product-gallery">
+                    <img id="mainImage"
+                         src="{{ url_for('static', filename='images/' + product.image) }}"
+                         class="main-image"
+                         alt="{{ product.name }}"
+                         loading="lazy">
+                    <div class="thumbnail-container">
+                        {% for i in range(1, 4) %}
+                        <div class="option-btn">
+                            <input type="radio" name="thumbnail" id="thumb-{{ i }}" {% if loop.first %}checked{% endif %}>
+                            <label for="thumb-{{ i }}" onclick="changeImage('{{ url_for('static', filename='images/' + product.image) }}')">
+                                <img src="{{ url_for('static', filename='images/' + product.image) }}"
+                                     class="thumbnail {% if loop.first %}active{% endif %}"
+                                     alt="Thumbnail {{ i }}">
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация о товаре -->
+            <div class="col-lg-6">
+                <div class="product-info-card">
+                    <h1 class="product-title">{{ product.name }}</h1>
+                    <p class="product-sku">Артикул: {{ product.id }}</p>
+
+                    <div class="price-container">
+                        <span class="current-price">${{ "%.2f"|format(product.price) }}</span>
+                        <span class="badge bg-success stock-badge">
+                            <i class="bi bi-check-circle me-1"></i> В наличии
+                        </span>
+                    </div>
+
+                    <p class="product-description">{{ product.description }}</p>
+
+                    <div class="option-section">
+                        <h6 class="option-title">Цвет:</h6>
+                        <div class="option-buttons">
+                            {% for color in ['Черный', 'Белый', 'Синий', 'Красный'] %}
+                            <div class="option-btn">
+                                <input type="radio" name="color" id="color-{{ loop.index }}" {% if loop.first %}checked{% endif %}>
+                                <label for="color-{{ loop.index }}">{{ color }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="option-section">
+                        <h6 class="option-title">Размер:</h6>
+                        <div class="option-buttons">
+                            {% for size in ['XS', 'S', 'M', 'L', 'XL', 'XXL'] %}
+                            <div class="option-btn">
+                                <input type="radio" name="size" id="size-{{ size }}" {% if loop.index == 2 %}checked{% endif %}>
+                                <label for="size-{{ size }}">{{ size }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                        <input type="text" class="quantity-input" value="1" id="quantityInput" readonly>
+                        <button type="button" class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                    </div>
+
+                    <button class="btn btn-primary add-to-cart-btn"
+                            onclick="addToCart({{ product.id }})">
+                        <i class="bi bi-cart-plus"></i> Добавить в корзину
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Детальное описание -->
+        <div class="card mt-4 border-0 shadow-sm">
+            <div class="card-header bg-transparent border-0 p-0">
+                <ul class="nav nav-tabs details-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#description">
+                            <i class="bi bi-file-text me-2"></i>Описание
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#specs">
+                            <i class="bi bi-list-check me-2"></i>Характеристики
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#reviews">
+                            <i class="bi bi-star me-2"></i>Отзывы (24)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body tab-content details-content">
+                <div class="tab-pane fade show active" id="description">
+                    <h5 class="mb-3">Подробное описание</h5>
+                    <p>{{ product.description }}</p>
+                    <p class="mb-0">Этот товар изготовлен из высококачественных материалов с особой внимательностью к деталям. Идеальная посадка и комфорт гарантированы. Уникальный дизайн делает этот продукт отличным выбором для тех, кто ценит стиль и качество.</p>
+                </div>
+                <div class="tab-pane fade" id="specs">
+                    <h5 class="mb-3">Технические характеристики</h5>
+                    <table class="table specs-table">
+                        <tbody>
+                            <tr><th>Материал</th><td>Хлопок 100%</td></tr>
+                            <tr><th>Производитель</th><td>DressUP</td></tr>
+                            <tr><th>Страна производства</th><td>Россия</td></tr>
+                            <tr><th>Состав</th><td>Основная ткань: 100% хлопок</td></tr>
+                            <tr><th>Уход</th><td>Машинная стирка при 30°C, не отбеливать, гладить при средней температуре</td></tr>
+                            <tr><th>Сезон</th><td>Круглогодичный</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="reviews">
+                    <h5 class="mb-3">Отзывы покупателей</h5>
+                    <div class="alert alert-info">
+                        Отзывы временно недоступны. Приносим извинения за неудобства.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script>
+        // Смена основного изображения
+        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Изменение количества товара
+        function changeQuantity(change) {
+            const input = document.getElementById('quantityInput');
+            let value = parseInt(input.value) + change;
+            if (value < 1) value = 1;
+            if (value > 99) value = 99;
+            input.value = value;
+        }
+
+        // Добавление в корзину
+        function addToCart(productId) {
+            const quantity = document.getElementById('quantityInput').value;
+            const color = document.querySelector('input[name="color"]:checked').nextElementSibling.textContent;
+            const size = document.querySelector('input[name="size"]:checked').nextElementSibling.textContent;
+
+            fetch('{{ url_for("add_to_cart") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    id: productId,
+                    quantity: quantity,
+                    color: color,
+                    size: size
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Товар добавлен в корзину', 'success');
+                    updateCartCounter(data.cart_count);
+                } else {
+                    showToast(data.message || 'Ошибка при добавлении в корзину', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                showToast('Произошла ошибка. Попробуйте позже.', 'danger');
+            });
+        }
+
+        // Показать уведомление
+        function showToast(message, type = 'success') {
+            const toastContainer = document.createElement('div');
+            toastContainer.className = `toast align-items-center text-white bg-${type} border-0 position-fixed bottom-0 end-0 m-3`;
+            toastContainer.setAttribute('role', 'alert');
+            toastContainer.setAttribute('aria-live', 'assertive');
+            toastContainer.setAttribute('aria-atomic', 'true');
+
+            toastContainer.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle'} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+
+            document.body.appendChild(toastContainer);
+            const toast = new bootstrap.Toast(toastContainer);
+            toast.show();
+
+            setTimeout(() => {
+                toastContainer.remove();
+            }, 5000);
+        }
+
+        // Обновить счетчик корзины
+        function updateCartCounter(count) {
+            const counter = document.getElementById('cart-counter');
+            if (counter) {
+                counter.textContent = count;
+                // Анимация
+                counter.classList.add('animate__animated', 'animate__bounce');
+                setTimeout(() => {
+                    counter.classList.remove('animate__animated', 'animate__bounce');
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
