@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <script src="{{ url_for('static', filename='js/color-modes.js') }}"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DressUP · My Orders</title>
+
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <style>
+      .order-card {
+        transition: box-shadow 0.3s;
+        margin-bottom: 20px;
+        background-color: var(--bs-card-bg);
+      }
+
+      .order-card:hover {
+        box-shadow: 0 0.5rem 1rem var(--bs-tertiary-color);
+      }
+
+      .order-header {
+        background-color: var(--bs-tertiary-bg);
+        border-bottom: 1px solid var(--bs-border-color);
+      }
+
+      .product-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+
+      .order-date {
+        color: var(--bs-secondary-color);
+        font-size: 0.9rem;
+      }
+
+      .order-summary {
+        background-color: var(--bs-tertiary-bg);
+        border-top: 1px solid var(--bs-border-color);
+      }
+
+      .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+
+      /* Адаптация таблицы для темной темы */
+      .table {
+        --bs-table-bg: transparent;
+        --bs-table-striped-bg: var(--bs-tertiary-bg);
+        --bs-table-hover-bg: var(--bs-secondary-bg);
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'partials/theme_switcher.html' %}
+    {% include 'partials/navbar.html' %}
+
+    <main class="container py-5">
+      <div class="py-4 text-center">
+        <h2>My Orders</h2>
+        <p class="text-muted">Your order history</p>
+      </div>
+
+      {% if orders %}
+        <div class="row">
+          {% for order in orders %}
+          <div class="col-12 mb-4">
+            <div class="card order-card">
+              <div class="card-header order-header d-flex justify-content-between align-items-center">
+                <div>
+                  <h5 class="mb-0">Order #{{ order.id }}</h5>
+                  <span class="order-date">Placed on {{ order.created_at.strftime('%B %d, %Y') }}</span>
+                </div>
+                <div>
+                  {% if order.size or order.color %}
+                  <span class="badge bg-secondary me-1">{{ order.size }}</span>
+                  <span class="badge bg-secondary">{{ order.color }}</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th style="width: 100px">Image</th>
+                        <th>Product</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for item in order.items %}
+                      <tr>
+                        <td>
+                          <img src="{{ url_for('static', filename='images/' + item.product.image) }}"
+                               class="product-img"
+                               alt="{{ item.product.name }}">
+                        </td>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.size }}</td>
+                        <td>{{ item.color }}</td>
+                        <td>{{ item.quantity }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="card-footer order-summary text-end">
+                <strong>Total items: {{ order.items|sum(attribute='quantity') }}</strong>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-5">
+          <h4 class="text-muted">You haven't placed any orders yet</h4>
+          <a href="{{ url_for('main_page') }}" class="btn btn-primary mt-3">Start Shopping</a>
+        </div>
+      {% endif %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  </body>
+</html>

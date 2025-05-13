@@ -20,6 +20,10 @@
           <a class="nav-link fs-5 {{ 'active' if request.endpoint == 'profile' }}"
              href="{{ url_for('profile') }}">My account</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link fs-5 {{ 'active' if request.endpoint == 'orders' }}"
+             href="{{ url_for('orders') }}">My orders</a>
+        </li>
       </ul>
       <form role="search">
         <input class="form-control fs-6" type="search" placeholder="Search" aria-label="Search">

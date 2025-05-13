@@ -1,7 +1,7 @@
 from flask import Flask, url_for, render_template, request, redirect, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
-from data import Product, User, db
+from data import Product, User, db, Order
 import requests
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -62,6 +62,12 @@ def add_to_cart():
 def cart():
     return render_template('cart.html', cart_list=get_products_with_quantity(cart_list))
 
+
+@app.route('/orders')
+@login_required
+def orders():
+     my_orders = Order.query.filter_by(user_id=current_user.id).order_by(Order.created_at.desc()).all()
+     return render_template('orders.html', orders=my_orders)
 
 @app.route("/profile", methods=['GET', 'POST'])
 @login_required
