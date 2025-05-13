@@ -22,43 +22,26 @@
             margin-bottom: var(--product-gap);
             border-radius: 0.5rem;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
         }
 
         .main-image {
             cursor: zoom-in;
             transition: transform 0.3s ease;
             border-radius: 0.5rem;
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
+            max-width: 100%;
+            height: auto;
+            max-height: 600px;
+            width: auto;
+            object-fit: contain;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .main-image:hover {
             transform: scale(1.01);
-        }
-
-        .thumbnail-container {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-
-        .thumbnail {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s ease;
-            border-radius: 0.35rem;
-            opacity: 0.8;
-        }
-
-        .thumbnail:hover, .thumbnail.active {
-            border-color: var(--bs-primary);
-            opacity: 1;
-            transform: translateY(-2px);
         }
 
         .product-info-card {
@@ -231,37 +214,64 @@
             border-bottom: 1px solid var(--bs-border-color);
         }
 
-        @media (max-width: 992px) {
-            .main-image {
-                height: 400px;
-            }
+        .theme-switcher-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2000;
         }
 
         @media (max-width: 768px) {
-            .main-image {
-                height: 350px;
-            }
-
             .product-info-card {
                 padding: 1.5rem;
             }
+
+            .main-image {
+                max-height: 400px;
+            }
         }
+
+        @media (max-width: 576px) {
+            .main-image {
+                max-height: 300px;
+            }
+        }
+
+                  .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+
     </style>
 </head>
 <body class="bg-body-tertiary">
-    {% include 'partials/theme_switcher.html' %}
+    <div class="theme-switcher-container">
+        {% include 'partials/theme_switcher.html' %}
+    </div>
+
     {% include 'partials/navbar.html' %}
 
     <div class="product-container py-5">
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url_for('main_page') }}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('main_page') }}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
             </ol>
         </nav>
 
         <div class="row g-4">
-            <!-- Галерея товара -->
+            <!-- Product Gallery -->
             <div class="col-lg-6">
                 <div class="product-gallery">
                     <img id="mainImage"
@@ -269,50 +279,27 @@
                          class="main-image"
                          alt="{{ product.name }}"
                          loading="lazy">
-                    <div class="thumbnail-container">
-                        {% for i in range(1, 4) %}
-                        <div class="option-btn">
-                            <input type="radio" name="thumbnail" id="thumb-{{ i }}" {% if loop.first %}checked{% endif %}>
-                            <label for="thumb-{{ i }}" onclick="changeImage('{{ url_for('static', filename='images/' + product.image) }}')">
-                                <img src="{{ url_for('static', filename='images/' + product.image) }}"
-                                     class="thumbnail {% if loop.first %}active{% endif %}"
-                                     alt="Thumbnail {{ i }}">
-                            </label>
-                        </div>
-                        {% endfor %}
-                    </div>
                 </div>
             </div>
 
-            <!-- Информация о товаре -->
+            <!-- Product Info -->
             <div class="col-lg-6">
                 <div class="product-info-card">
                     <h1 class="product-title">{{ product.name }}</h1>
-                    <p class="product-sku">Артикул: {{ product.id }}</p>
+                    <p class="product-sku">SKU: {{ product.id }}</p>
 
                     <div class="price-container">
                         <span class="current-price">${{ "%.2f"|format(product.price) }}</span>
                         <span class="badge bg-success stock-badge">
-                            <i class="bi bi-check-circle me-1"></i> В наличии
+                            <i class="bi bi-check-circle me-1"></i> In Stock
                         </span>
                     </div>
 
                     <p class="product-description">{{ product.description }}</p>
 
+                    <!-- Size Selection Only -->
                     <div class="option-section">
-                        <h6 class="option-title">Цвет:</h6>
-                        <div class="option-buttons">
-                            {% for color in ['Черный', 'Белый', 'Синий', 'Красный'] %}
-                            <div class="option-btn">
-                                <input type="radio" name="color" id="color-{{ loop.index }}" {% if loop.first %}checked{% endif %}>
-                                <label for="color-{{ loop.index }}">{{ color }}</label>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <div class="option-section">
-                        <h6 class="option-title">Размер:</h6>
+                        <h6 class="option-title">Size:</h6>
                         <div class="option-buttons">
                             {% for size in ['XS', 'S', 'M', 'L', 'XL', 'XXL'] %}
                             <div class="option-btn">
@@ -331,56 +318,52 @@
 
                     <button class="btn btn-primary add-to-cart-btn"
                             onclick="addToCart({{ product.id }})">
-                        <i class="bi bi-cart-plus"></i> Добавить в корзину
+                        <i class="bi bi-cart-plus"></i> Add to Cart
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Детальное описание -->
+        <!-- Product Details -->
         <div class="card mt-4 border-0 shadow-sm">
             <div class="card-header bg-transparent border-0 p-0">
                 <ul class="nav nav-tabs details-tabs">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#description">
-                            <i class="bi bi-file-text me-2"></i>Описание
+                            <i class="bi bi-file-text me-2"></i>Description
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#specs">
-                            <i class="bi bi-list-check me-2"></i>Характеристики
+                            <i class="bi bi-list-check me-2"></i>Specifications
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#reviews">
-                            <i class="bi bi-star me-2"></i>Отзывы (24)
+                            <i class="bi bi-star me-2"></i>Reviews (24)
                         </a>
                     </li>
                 </ul>
             </div>
             <div class="card-body tab-content details-content">
                 <div class="tab-pane fade show active" id="description">
-                    <h5 class="mb-3">Подробное описание</h5>
+                    <h5 class="mb-3">Product Description</h5>
                     <p>{{ product.description }}</p>
-                    <p class="mb-0">Этот товар изготовлен из высококачественных материалов с особой внимательностью к деталям. Идеальная посадка и комфорт гарантированы. Уникальный дизайн делает этот продукт отличным выбором для тех, кто ценит стиль и качество.</p>
+                    <p class="mb-0">This product is made from high-quality materials with special attention to detail. Perfect fit and comfort guaranteed. The unique design makes this product an excellent choice for those who value style and quality.</p>
                 </div>
                 <div class="tab-pane fade" id="specs">
-                    <h5 class="mb-3">Технические характеристики</h5>
+                    <h5 class="mb-3">Product Specifications</h5>
                     <table class="table specs-table">
                         <tbody>
-                            <tr><th>Материал</th><td>Хлопок 100%</td></tr>
-                            <tr><th>Производитель</th><td>DressUP</td></tr>
-                            <tr><th>Страна производства</th><td>Россия</td></tr>
-                            <tr><th>Состав</th><td>Основная ткань: 100% хлопок</td></tr>
-                            <tr><th>Уход</th><td>Машинная стирка при 30°C, не отбеливать, гладить при средней температуре</td></tr>
-                            <tr><th>Сезон</th><td>Круглогодичный</td></tr>
+                            <tr><th>Brand</th><td>DressUP</td></tr>
+                            <tr><th>Care Instructions</th><td>Machine wash at 30°C, do not bleach, iron at medium temperature</td></tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="tab-pane fade" id="reviews">
-                    <h5 class="mb-3">Отзывы покупателей</h5>
+                    <h5 class="mb-3">Customer Reviews</h5>
                     <div class="alert alert-info">
-                        Отзывы временно недоступны. Приносим извинения за неудобства.
+                        Reviews are temporarily unavailable. We apologize for the inconvenience.
                     </div>
                 </div>
             </div>
@@ -389,16 +372,7 @@
 
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script>
-        // Смена основного изображения
-        function changeImage(src) {
-            document.getElementById('mainImage').src = src;
-            document.querySelectorAll('.thumbnail').forEach(thumb => {
-                thumb.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-
-        // Изменение количества товара
+        // Change product quantity
         function changeQuantity(change) {
             const input = document.getElementById('quantityInput');
             let value = parseInt(input.value) + change;
@@ -407,10 +381,9 @@
             input.value = value;
         }
 
-        // Добавление в корзину
+        // Add to cart function
         function addToCart(productId) {
             const quantity = document.getElementById('quantityInput').value;
-            const color = document.querySelector('input[name="color"]:checked').nextElementSibling.textContent;
             const size = document.querySelector('input[name="size"]:checked').nextElementSibling.textContent;
 
             fetch('{{ url_for("add_to_cart") }}', {
@@ -422,26 +395,25 @@
                 body: JSON.stringify({
                     id: productId,
                     quantity: quantity,
-                    color: color,
                     size: size
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Товар добавлен в корзину', 'success');
+                    showToast('Item added to cart', 'success');
                     updateCartCounter(data.cart_count);
                 } else {
-                    showToast(data.message || 'Ошибка при добавлении в корзину', 'danger');
+                    showToast(data.message || 'Error adding to cart', 'danger');
                 }
             })
             .catch(error => {
-                console.error('Ошибка:', error);
-                showToast('Произошла ошибка. Попробуйте позже.', 'danger');
+                console.error('Error:', error);
+                showToast('An error occurred. Please try again.', 'danger');
             });
         }
 
-        // Показать уведомление
+        // Show toast notification
         function showToast(message, type = 'success') {
             const toastContainer = document.createElement('div');
             toastContainer.className = `toast align-items-center text-white bg-${type} border-0 position-fixed bottom-0 end-0 m-3`;
@@ -468,12 +440,11 @@
             }, 5000);
         }
 
-        // Обновить счетчик корзины
+        // Update cart counter
         function updateCartCounter(count) {
             const counter = document.getElementById('cart-counter');
             if (counter) {
                 counter.textContent = count;
-                // Анимация
                 counter.classList.add('animate__animated', 'animate__bounce');
                 setTimeout(() => {
                     counter.classList.remove('animate__animated', 'animate__bounce');
