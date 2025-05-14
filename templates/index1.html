@@ -110,11 +110,9 @@
                     <small class="card-text">{{ product.description }}</small>
                   </div>
                   <div class="card-button d-flex justify-content-center align-items-center p-3">
-                    <button type="button"
-                            onclick="event.stopPropagation(); addToCart({{ product.id }})"
-                            class="btn btn-sm btn-outline-secondary w-100">
-                      Add to cart
-                    </button>
+                    <a href="{{ url_for('product_demo', product_id=product.id) }}" class="btn btn-primary add-to-cart-btn">
+    <i class="bi bi-cart-plus"></i> Go to Demo
+</a>
                   </div>
                 </div>
               </a>

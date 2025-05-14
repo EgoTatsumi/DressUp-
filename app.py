@@ -21,6 +21,7 @@ login_manager.init_app(app)
 
 cart_list = {}
 
+
 def get_products_with_quantity(product_dict):
     product_ids = list(product_dict.keys())
 
@@ -36,7 +37,8 @@ def get_products_with_quantity(product_dict):
             "image": product.image,
             "quantity": product_dict.get(product.id, 0)
         })
-
+    print("Product dict:", product_dict)
+    print("Cart list:", result)
     return result
 
 
