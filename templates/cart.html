@@ -127,33 +127,40 @@
                     <span class="badge bg-primary rounded-pill float-end">3</span>
                   </h4>
                 </div>
-                {% for product in cart_list %}
+                <!-- НАЧАЛО цикла по товарам -->
+{% set price = 0 %}
 <ul class="list-group list-group-flush">
-  <li class="list-group-item" data-product-id="{{ product['id'] }}">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="product-info">
-        <img src="{{ url_for('static', filename='images/' + product['image']) }}" alt="Product image" class="product-img">
-        <div>
-          <h6 class="my-0">{{ product["name"] }}</h6>
-          <small class="text-body-secondary">{{ product["description"] }}</small>
-          <div class="quantity-control">
-            <form action="{{ url_for('minus', id=product.id) }}" method="POST">
-            <button class="btn btn-sm btn-outline-secondary">-</button>
-            </form>
-            <input type="text" class="form-control form-control-sm" value="{{ product['quantity'] }}">
-            <form action="{{ url_for('plus', id=product.id) }}" method="POST">
-            <button class="btn btn-sm btn-outline-secondary">+</button>
-            </form>
+  {% for product in cart_list %}
+    <li class="list-group-item" data-product-id="{{ product['id'] }}">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="product-info">
+          <img src="{{ url_for('static', filename='images/' + product['image']) }}" alt="Product image" class="product-img">
+          <div>
+            <h6 class="my-0">{{ product["name"] }}</h6>
+            <small class="text-muted d-block mb-1">{{ product["description"] }}</small>
+            <small class="d-block">Size: <strong>{{ product["size"] }}</strong></small>
+            <small class="d-block mb-1">Color: <strong>{{ product["color"] }}</strong></small>
+            <div class="quantity-control">
+              <form action="{{ url_for('minus', id=product.id) }}" method="POST">
+                <button class="btn btn-sm btn-outline-secondary">−</button>
+              </form>
+              <input type="text" class="form-control form-control-sm" value="{{ product['quantity'] }}" readonly>
+              <form action="{{ url_for('plus', id=product.id) }}" method="POST">
+                <button class="btn btn-sm btn-outline-secondary">+</button>
+              </form>
+            </div>
           </div>
         </div>
+        <div class="text-end">
+          {% set subtotal = product['quantity'] * product['price'] %}
+          <span class="fw-bold">${{ '%.2f'|format(subtotal) }}</span>
+          <div class="remove-item" title="Remove item">×</div>
+        </div>
       </div>
-      <div class="text-end">
-        <span class="fw-bold">${{ product['price'] }}</span>
-        <div class="remove-item" title="Remove item">×</div>
-      </div>
-    </div>
-  </li>
-{% endfor %}
+    </li>
+    {% set price = price + subtotal %}
+  {% endfor %}
+
 
 
                   <!-- Promo code -->
@@ -168,7 +175,7 @@
                   <!-- Total -->
                   <li class="list-group-item d-flex justify-content-between">
                     <span class="fw-bold">Total (USD)</span>
-                    <strong>$68.48</strong>
+                    <strong>{{price}}</strong>
                   </li>
                 </ul>
               </div>

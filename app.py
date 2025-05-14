@@ -1,4 +1,4 @@
-from flask import Flask, url_for, render_template, request, redirect, flash, jsonify
+from flask import Flask, url_for, render_template, request, redirect, flash, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from data import Product, User, db, Order
@@ -22,23 +22,31 @@ login_manager.init_app(app)
 cart_list = {}
 
 
-def get_products_with_quantity(product_dict):
-    product_ids = list(product_dict.keys())
+def get_products_with_quantity(cart_list):
+    # Получаем все уникальные product_id из корзины
+    product_ids = list({item['product_id'] for item in cart_list})
 
+    # Загружаем соответствующие продукты из базы данных
     products = Product.query.filter(Product.id.in_(product_ids)).all()
+    product_map = {product.id: product for product in products}
 
     result = []
-    for product in products:
-        result.append({
-            "id": product.id,
-            "name": product.name,
-            "description": product.description,
-            "price": round(product.price, 2),
-            "image": product.image,
-            "quantity": product_dict.get(product.id, 0)
-        })
-    print("Product dict:", product_dict)
-    print("Cart list:", result)
+    for item in cart_list:
+        product = product_map.get(item['product_id'])
+        if product:
+            result.append({
+                "id": product.id,
+                "name": product.name,
+                "description": product.description,
+                "price": round(product.price, 2),
+                "image": product.image,
+                "quantity": item.get('quantity', 1),
+                "size": item.get('size'),
+                "color": item.get('color')
+            })
+
+    print("Cart input:", cart_list)
+    print("Cart enriched:", result)
     return result
 
 
@@ -47,22 +55,39 @@ def main_page():
     products = Product.query.all()
     return render_template('index1.html', products=products)
 
-@app.route("/add-to-cart", methods=["POST"])
+@app.route('/add-to-cart', methods=['POST'])
+@login_required
 def add_to_cart():
     data = request.get_json()
-    print(f"Добавлено в корзину: {data}")
-    # Здесь можно добавить товар в сессию или БД
-    if cart_list.get(data['id']):
-        cart_list[data['id']] += 1
-    else:
-        cart_list[data['id']] = 1
-    print(cart_list)
-    return jsonify({"success": True, "message": "Товар добавлен в корзину"})
+
+    product_id = data.get('id')
+    quantity = int(data.get('quantity'))
+    size = data.get('size')
+    color = data.get('color')
+    price = float(data.get('price'))
+
+    # Пример добавления в корзину (можешь адаптировать под свою логику)
+    cart_item = {
+        'product_id': product_id,
+        'quantity': quantity,
+        'size': size,
+        'color': color,
+        'price': price
+    }
+
+    cart = session.get('cart', [])
+    cart.append(cart_item)
+    session['cart'] = cart
+
+    return jsonify({'success': True, 'cart_count': len(cart)})
 
 
 @app.route('/cart')
 def cart():
-    return render_template('cart.html', cart_list=get_products_with_quantity(cart_list))
+    cart_items = session.get('cart', [])
+    enriched_cart = get_products_with_quantity(cart_items)
+    return render_template('cart.html', cart_list=enriched_cart)
+
 
 
 @app.route('/orders')

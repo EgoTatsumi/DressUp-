@@ -435,35 +435,41 @@
 
         // Add to cart function
         function addToCart(productId) {
-            const quantity = document.getElementById('quantityInput').value;
-            const size = document.querySelector('input[name="size"]:checked').nextElementSibling.textContent;
+    const quantity = document.getElementById('quantityInput').value;
+    const size = document.querySelector('input[name="size"]:checked').nextElementSibling.textContent;
+    const color = document.querySelector('input[name="color"]:checked').nextElementSibling.textContent;
+    const price = {{ product.price|tojson }}; // передаем цену прямо из Jinja2
 
-            fetch('{{ url_for("add_to_cart") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({
-                    id: productId,
-                    quantity: quantity,
-                    size: size
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showToast('Item added to cart', 'success');
-                    updateCartCounter(data.cart_count);
-                } else {
-                    showToast(data.message || 'Error adding to cart', 'danger');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('An error occurred. Please try again.', 'danger');
-            });
+    fetch('{{ url_for("add_to_cart") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            id: productId,
+            quantity: quantity,
+            size: size,
+            color: color,
+            price: price
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Item added to cart', 'success');
+            updateCartCounter(data.cart_count);
+        } else {
+            showToast(data.message || 'Error adding to cart', 'danger');
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('An error occurred. Please try again.', 'danger');
+    });
+}
+
+
 
         // Show toast notification
         function showToast(message, type = 'success') {
