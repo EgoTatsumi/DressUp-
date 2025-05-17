@@ -227,7 +227,7 @@ def remove_item(id):
 
 @app.route('/continue-shopping')
 def continue_shopping():
-    return redirect(url_for('index'))
+    return redirect(url_for('main_page'))
 
 
 @app.route('/checkout', methods=["POST"])
@@ -248,7 +248,7 @@ def checkout():
 
     # Добавляем товары в заказ
     for item in cart:
-        product = Product.query.get(item['id'])
+        product = Product.query.get(item['product_id'])
         if not product:
             continue  # если товар не найден, пропускаем
 
@@ -283,7 +283,7 @@ def dashboard():
     return f"Привет, {current_user.name}! Добро пожаловать в личный кабинет."
 
 
-@app.route("/product_demo/<int:product_id>") #<int:index>
+@app.route("/product_demo/<int:product_id>")
 def product_demo(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template("product_demo.html", product=product)
