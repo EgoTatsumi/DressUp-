@@ -52,6 +52,13 @@ def get_products_with_quantity(cart_list):
 
 
 
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    # Если это AJAX-запрос, возвращаем JSON вместо редиректа
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'success': False, 'login_required': True}), 401
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route("/")
