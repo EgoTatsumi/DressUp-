@@ -41,8 +41,6 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    size = db.Column(db.Text)
-    color = db.Column(db.Text)
     items = db.relationship('OrderItem', backref='order', lazy=True)
 
 # Позиция в заказе

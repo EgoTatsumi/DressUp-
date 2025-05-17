@@ -1,134 +1,46 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
-  <head>
-    <script src="../static/js/color-modes.js"></script>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DressUP · Cart</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DressUP · Cart</title>
 
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
+  <style>
+    .full-page-cart { min-height: calc(100vh - 120px); padding: 2rem 0; }
+    .cart-container { max-width: 800px; margin: 0 auto; }
+    .product-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; margin-right: 15px; }
+    .product-info { display: flex; align-items: center; }
+    .quantity-control { display: flex; align-items: center; margin-top: 5px; }
+    .quantity-control button { width: 30px; height: 30px; padding: 0; }
+    .quantity-control input { width: 50px; text-align: center; margin: 0 5px; }
+  </style>
+</head>
+<body>
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-      .nav-scroller {
-        position: relative;
-        z-index: 2;
-        height: 2.75rem;
-        overflow-y: hidden;
-      }
+  {% include 'partials/theme_switcher.html' %}
+  {% include 'partials/navbar.html' %}
 
-      .nav-scroller .nav {
-        display: flex;
-        flex-wrap: nowrap;
-        padding-bottom: 1rem;
-        margin-top: -1px;
-        overflow-x: auto;
-        text-align: center;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-      }
-      .btn-bd-primary {
-        --bd-violet-bg: #712cf9;
-        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+  <div class="full-page-cart">
+    <div class="cart-container">
+      <main>
+        <div class="py-5 text-center">
+          <h2>Your Shopping Cart</h2>
+          <p class="lead">Review your items before checkout</p>
+        </div>
 
-        --bs-btn-font-weight: 600;
-        --bs-btn-color: var(--bs-white);
-        --bs-btn-bg: var(--bd-violet-bg);
-        --bs-btn-border-color: var(--bd-violet-bg);
-        --bs-btn-hover-color: var(--bs-white);
-        --bs-btn-hover-bg: #6528e0;
-        --bs-btn-hover-border-color: #6528e0;
-        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-        --bs-btn-active-color: var(--bs-btn-hover-color);
-        --bs-btn-active-bg: #5a23c8;
-        --bs-btn-active-border-color: #5a23c8;
-      }
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <div class="card mb-4">
+              <div class="card-header bg-light">
+                <h4 class="mb-0">
+                  <span class="text-primary">Your items</span>
+                  <span class="badge bg-primary rounded-pill float-end">{{ cart_list|length }}</span>
+                </h4>
+              </div>
 
-      .bd-mode-toggle {
-        z-index: 1500;
-      }
-
-      .bd-mode-toggle .dropdown-menu .active .bi {
-        display: block !important;
-      }
-
-      .full-page-cart {
-        min-height: calc(100vh - 120px);
-        padding: 2rem 0;
-      }
-      .cart-container {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-      .product-img {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-        border-radius: 4px;
-        margin-right: 15px;
-      }
-      .product-info {
-        display: flex;
-        align-items: center;
-      }
-      .quantity-control {
-        display: flex;
-        align-items: center;
-        margin-top: 5px;
-      }
-      .quantity-control button {
-        width: 30px;
-        height: 30px;
-        padding: 0;
-      }
-      .quantity-control input {
-        width: 50px;
-        text-align: center;
-        margin: 0 5px;
-      }
-      .remove-item {
-        cursor: pointer;
-        font-size: 1.2rem;
-        margin-left: 10px;
-      }
-
-    </style>
-  </head>
-  <body>
-    {% include 'partials/theme_switcher.html' %}
-    {% include 'partials/navbar.html' %}
-
-    <div class="full-page-cart">
-      <div class="cart-container">
-        <main>
-          <div class="py-5 text-center">
-            <h2>Your Shopping Cart</h2>
-            <p class="lead">Review your items before checkout</p>
-          </div>
-
-          <div class="row justify-content-center">
-            <div class="col-lg-10">
-              <div class="card mb-4">
-                <div class="card-header bg-light">
-                  <h4 class="mb-0">
-                    <span class="text-primary">Your items</span>
-                    <span class="badge bg-primary rounded-pill float-end">3</span>
-                  </h4>
-                </div>
-                <!-- НАЧАЛО цикла по товарам -->
-{% set price = 0 %}
+             {% set price = 0.00 %}
 <ul class="list-group list-group-flush">
   {% for product in cart_list %}
     <li class="list-group-item" data-product-id="{{ product['id'] }}">
@@ -136,169 +48,69 @@
         <div class="product-info">
           <img src="{{ url_for('static', filename='images/' + product['image']) }}" alt="Product image" class="product-img">
           <div>
-            <h6 class="my-0">{{ product["name"] }}</h6>
-            <small class="text-muted d-block mb-1">{{ product["description"] }}</small>
-            <small class="d-block">Size: <strong>{{ product["size"] }}</strong></small>
-            <small class="d-block mb-1">Color: <strong>{{ product["color"] }}</strong></small>
+            <h6 class="my-0">{{ product['name'] }}</h6>
+            <small class="text-muted d-block mb-1">{{ product['description'] }}</small>
+            <small class="d-block">Size: <strong>{{ product['size'] }}</strong></small>
+            <small class="d-block mb-1">Color: <strong>{{ product['color'].strip() }}</strong></small>
             <div class="quantity-control">
-              <form action="{{ url_for('minus', id=product.id) }}" method="POST">
+              <form action="{{ url_for('minus', id=product['id']) }}" method="POST" style="display:inline;">
                 <button class="btn btn-sm btn-outline-secondary">−</button>
               </form>
               <input type="text" class="form-control form-control-sm" value="{{ product['quantity'] }}" readonly>
-              <form action="{{ url_for('plus', id=product.id) }}" method="POST">
+              <form action="{{ url_for('plus', id=product['id']) }}" method="POST" style="display:inline;">
                 <button class="btn btn-sm btn-outline-secondary">+</button>
               </form>
             </div>
           </div>
         </div>
         <div class="text-end">
-          {% set subtotal = product['quantity'] * product['price'] %}
+          {% set subtotal = (product['quantity']) * (product['price']) %}
           <span class="fw-bold">${{ '%.2f'|format(subtotal) }}</span>
-          <div class="remove-item" title="Remove item">×</div>
+          <form action="{{ url_for('remove_item', id=product['id']) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-sm btn-outline-danger remove-item">×</button>
+          </form>
         </div>
       </div>
     </li>
     {% set price = price + subtotal %}
   {% endfor %}
+  <li class="list-group-item d-flex justify-content-between">
+    <span class="fw-bold">Total (USD)</span>
+    <strong>${{ '%.2f'|format(price) }}</strong>
+  </li>
+</ul>
 
 
+            </div>
 
-                  <!-- Promo code -->
-                  <li class="list-group-item d-flex justify-content-between bg-light">
-                    <div class="text-success">
-                      <h6 class="my-0">Promo code</h6>
-                      <small>SUMMER20</small>
-                    </div>
-                    <span class="text-success">−$5.00</span>
-                  </li>
-
-                  <!-- Total -->
-                  <li class="list-group-item d-flex justify-content-between">
-                    <span class="fw-bold">Total (USD)</span>
-                    <strong>{{price}}</strong>
-                  </li>
-                </ul>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <form class="card p-3">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Promo code">
+                    <button type="submit" class="btn btn-secondary">Apply</button>
+                  </div>
+                </form>
               </div>
+              <div class="col-md-6">
+                <div class="card p-3 bg-light">
+                  <div class="d-grid gap-2">
+                    <form action="{{ url_for('checkout') }}" method="POST">
+  <button class="btn btn-primary btn-lg w-100" type="submit">Proceed to Checkout</button>
+</form>
 
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <form class="card p-3">
-                    <div class="input-group">
-                      <input type="text" class="form-control" placeholder="Promo code">
-                      <button type="submit" class="btn btn-secondary">Apply</button>
-                    </div>
-                  </form>
-                </div>
-                <div class="col-md-6">
-                  <div class="card p-3 bg-light">
-                    <div class="d-grid gap-2">
-                      <button class="btn btn-primary btn-lg" type="button">Proceed to Checkout</button>
-                      <a href="#" class="btn btn-outline-secondary">Continue Shopping</a>
-                    </div>
+                    <a href="{{ url_for('continue_shopping') }}" class="btn btn-outline-secondary w-100 mt-2">Continue Shopping</a>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
+  </div>
 
-    <script src="../static/js/bootstrap.bundle.min.js"></script>
-    <script src="../static/js/checkout.js"></script>
- <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const DISCOUNT_CODE = "SUMMER20";
-  let discountApplied = false;
-
-  function parsePrice(priceStr) {
-    return parseFloat(priceStr.replace('$', ''));
-  }
-
-  function updateCartTotal() {
-    const itemElements = document.querySelectorAll(".list-group-item:not(.bg-light):not(:last-child)");
-    let total = 0;
-
-    itemElements.forEach(item => {
-      const priceText = item.querySelector(".fw-bold").textContent;
-      const unitPrice = parsePrice(priceText);
-
-      const qtyInput = item.querySelector(".quantity-control input");
-      const quantity = parseInt(qtyInput.value);
-
-      total += unitPrice * quantity;
-    });
-
-    if (discountApplied) {
-      total -= 5;
-      document.querySelector(".bg-light span").textContent = "−$5.00";
-      document.querySelector(".bg-light").style.display = "";
-    } else {
-      document.querySelector(".bg-light").style.display = "none";
-    }
-
-    total = Math.max(total, 0);
-    document.querySelector("li:last-child strong").textContent = $${total.toFixed(2)};
-  }
-
-  // Обработчики + и -
-  document.querySelectorAll(".quantity-control").forEach(control => {
-    const minusBtn = control.querySelector("button:first-child");
-    const plusBtn = control.querySelector("button:last-child");
-    const input = control.querySelector("input");
-
-    minusBtn.addEventListener("click", () => {
-      let value = parseInt(input.value);
-      if (!isNaN(value) && value > 1) {
-        input.value = value - 1;
-        updateCartTotal();
-      }
-    });
-
-    plusBtn.addEventListener("click", () => {
-      let value = parseInt(input.value);
-      if (!isNaN(value)) {
-        input.value = value + 1;
-        updateCartTotal();
-      }
-    });
-
-    input.addEventListener("input", () => {
-      let value = parseInt(input.value);
-      if (isNaN(value) || value < 1) {
-        input.value = 1;
-      }
-      updateCartTotal();
-    });
-  });
-
-  document.querySelectorAll(".remove-item").forEach(button => {
-    button.addEventListener("click", () => {
-      const item = button.closest("li");
-      item.remove();
-      updateCartTotal();
-    });
-  });
-
-  const promoForm = document.querySelector("form.card");
-  promoForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const promoInput = this.querySelector("input");
-    const promoCode = promoInput.value.trim().toUpperCase();
-    if (promoCode === DISCOUNT_CODE) {
-      discountApplied = true;
-      alert("Промокод применён! Скидка $5.");
-    } else {
-      discountApplied = false;
-      alert("Неверный промокод.");
-    }
-    updateCartTotal();
-  });
-
-  updateCartTotal();
-});
-</script>
-
-
-  </body>
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
 </html>

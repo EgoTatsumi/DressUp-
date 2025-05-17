@@ -1,11 +1,12 @@
 from flask import Flask, url_for, render_template, request, redirect, flash, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
-from data import Product, User, db, Order
+from data import Product, User, db, Order, OrderItem
 import requests
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
+from sqlalchemy.orm import joinedload
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
@@ -50,6 +51,9 @@ def get_products_with_quantity(cart_list):
     return result
 
 
+
+
+
 @app.route("/")
 def main_page():
     products = Product.query.all()
@@ -60,13 +64,12 @@ def main_page():
 def add_to_cart():
     data = request.get_json()
 
-    product_id = data.get('id')
+    product_id = int(data.get('id'))  # обязательно приведение к int
     quantity = int(data.get('quantity'))
     size = data.get('size')
     color = data.get('color')
     price = float(data.get('price'))
 
-    # Пример добавления в корзину (можешь адаптировать под свою логику)
     cart_item = {
         'product_id': product_id,
         'quantity': quantity,
@@ -76,10 +79,19 @@ def add_to_cart():
     }
 
     cart = session.get('cart', [])
-    cart.append(cart_item)
-    session['cart'] = cart
 
+    # Проверка: если такой же товар уже есть — увеличиваем количество
+    for item in cart:
+        if item['product_id'] == product_id and item['size'] == size and item['color'] == color:
+            item['quantity'] += quantity
+            break
+    else:
+        cart.append(cart_item)
+
+    session['cart'] = cart
+    session.modified = True  # обязательно!
     return jsonify({'success': True, 'cart_count': len(cart)})
+
 
 
 @app.route('/cart')
@@ -89,12 +101,19 @@ def cart():
     return render_template('cart.html', cart_list=enriched_cart)
 
 
-
 @app.route('/orders')
 @login_required
 def orders():
-     my_orders = Order.query.filter_by(user_id=current_user.id).order_by(Order.created_at.desc()).all()
-     return render_template('orders.html', orders=my_orders)
+    my_orders = (
+        Order.query
+        .filter_by(user_id=current_user.id)
+        .options(
+            joinedload(Order.items).joinedload(OrderItem.product)  # Загружаем позиции и товары
+        )
+        .order_by(Order.created_at.desc())
+        .all()
+    )
+    return render_template('orders.html', orders=my_orders)
 
 @app.route("/profile", methods=['GET', 'POST'])
 @login_required
@@ -168,19 +187,78 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/plus-product/<int:id>', methods=['GET', 'POST'])
+@app.route('/cart/plus/<int:id>', methods=["POST"])
 def plus(id):
-    if request.method == 'POST':
-        cart_list[id] += 1
-    return render_template('cart.html', cart_list=get_products_with_quantity(cart_list), count=get_products_with_quantity(cart_list))
+    cart = session.get('cart', [])
+    for item in cart:
+        if item['product_id'] == id:
+            item['quantity'] += 1
+            break
+    session['cart'] = cart
+    return redirect(url_for('cart'))
 
 
-@app.route('/minus-product/<int:id>', methods=['GET', 'POST'])
+@app.route('/cart/minus/<int:id>', methods=["POST"])
 def minus(id):
-    if request.method == 'POST':
-        if cart_list[id] > 1:
-            cart_list[id] -= 1
-    return render_template('cart.html', cart_list=get_products_with_quantity(cart_list))
+    cart = session.get('cart', [])
+    for item in cart:
+        if item['product_id'] == id and item['quantity'] > 1:
+            item['quantity'] -= 1
+            break
+    session['cart'] = cart
+    return redirect(url_for('cart'))
+
+@app.route('/cart/remove/<int:id>', methods=["POST"])
+def remove_item(id):
+    cart = session.get('cart', [])
+    cart = [item for item in cart if item['product_id'] != id]
+    session['cart'] = cart
+    return redirect(url_for('cart'))
+
+
+
+
+@app.route('/continue-shopping')
+def continue_shopping():
+    return redirect(url_for('index'))
+
+
+@app.route('/checkout', methods=["POST"])
+@login_required
+def checkout():
+    # Получаем ID текущего авторизованного пользователя
+    user_id = current_user.id
+
+    # Проверка корзины
+    cart = session.get('cart', [])
+    if not cart:
+        return redirect(url_for('cart'))
+
+    # Создаём заказ
+    order = Order(user_id=user_id)
+    db.session.add(order)
+    db.session.commit()  # нужно сразу сохранить, чтобы появился order.id
+
+    # Добавляем товары в заказ
+    for item in cart:
+        product = Product.query.get(item['id'])
+        if not product:
+            continue  # если товар не найден, пропускаем
+
+        order_item = OrderItem(
+            order_id=order.id,
+            product_id=product.id,
+            quantity=item['quantity'],
+            size=item.get('size'),
+            color=item.get('color', '').strip()
+        )
+        db.session.add(order_item)
+
+    db.session.commit()
+    session.pop('cart', None)  # очищаем корзину
+
+    return redirect(url_for('orders'))  # лучше перенаправить на страницу заказов
+
 
 
 # Выход

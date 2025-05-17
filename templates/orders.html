@@ -2,11 +2,9 @@
 <html lang="en" data-bs-theme="auto">
   <head>
     <script src="{{ url_for('static', filename='js/color-modes.js') }}"></script>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DressUP · My Orders</title>
-
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 
     <style>
@@ -42,23 +40,6 @@
         border-top: 1px solid var(--bs-border-color);
       }
 
-      .btn-bd-primary {
-        --bd-violet-bg: #712cf9;
-        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-        --bs-btn-font-weight: 600;
-        --bs-btn-color: var(--bs-white);
-        --bs-btn-bg: var(--bd-violet-bg);
-        --bs-btn-border-color: var(--bd-violet-bg);
-        --bs-btn-hover-color: var(--bs-white);
-        --bs-btn-hover-bg: #6528e0;
-        --bs-btn-hover-border-color: #6528e0;
-        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-        --bs-btn-active-color: var(--bs-btn-hover-color);
-        --bs-btn-active-bg: #5a23c8;
-        --bs-btn-active-border-color: #5a23c8;
-      }
-
-      /* Адаптация таблицы для темной темы */
       .table {
         --bs-table-bg: transparent;
         --bs-table-striped-bg: var(--bs-tertiary-bg);
@@ -86,12 +67,6 @@
                   <h5 class="mb-0">Order #{{ order.id }}</h5>
                   <span class="order-date">Placed on {{ order.created_at.strftime('%B %d, %Y') }}</span>
                 </div>
-                <div>
-                  {% if order.size or order.color %}
-                  <span class="badge bg-secondary me-1">{{ order.size }}</span>
-                  <span class="badge bg-secondary">{{ order.color }}</span>
-                  {% endif %}
-                </div>
               </div>
 
               <div class="card-body p-0">
@@ -104,29 +79,37 @@
                         <th>Size</th>
                         <th>Color</th>
                         <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
                       </tr>
                     </thead>
                     <tbody>
+                      {% set total = 0 %}
                       {% for item in order.items %}
-                      <tr>
-                        <td>
-                          <img src="{{ url_for('static', filename='images/' + item.product.image) }}"
-                               class="product-img"
-                               alt="{{ item.product.name }}">
-                        </td>
-                        <td>{{ item.product.name }}</td>
-                        <td>{{ item.size }}</td>
-                        <td>{{ item.color }}</td>
-                        <td>{{ item.quantity }}</td>
-                      </tr>
+                        {% set subtotal = item.quantity * item.product.price %}
+                        {% set total = total + subtotal %}
+                        <tr>
+                          <td>
+                            <img src="{{ url_for('static', filename='images/' + item.product.image) }}"
+                                 class="product-img"
+                                 alt="{{ item.product.name }}">
+                          </td>
+                          <td>{{ item.product.name }}</td>
+                          <td>{{ item.size or '-' }}</td>
+                          <td>{{ item.color or '-' }}</td>
+                          <td>{{ item.quantity }}</td>
+                          <td>${{ "%.2f"|format(item.product.price) }}</td>
+                          <td>${{ "%.2f"|format(subtotal) }}</td>
+                        </tr>
                       {% endfor %}
                     </tbody>
                   </table>
                 </div>
               </div>
 
-              <div class="card-footer order-summary text-end">
-                <strong>Total items: {{ order.items|sum(attribute='quantity') }}</strong>
+              <div class="card-footer order-summary d-flex justify-content-between">
+                <span><strong>Total items:</strong> {{ order.items | sum(attribute='quantity') }}</span>
+                <span><strong>Total cost:</strong> ${{ "%.2f"|format(total) }}</span>
               </div>
             </div>
           </div>

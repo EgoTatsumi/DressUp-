@@ -7,9 +7,9 @@
     <list default="true" id="194038bd-36cc-4722-9fa8-0c64db0b0b8a" name="Changes" comment="Почти доделка">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/instance/shop.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/shop.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cart.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/product_demo.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product_demo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/orders.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/orders.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,7 +192,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747247549006</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Почти доделка">
+      <option name="closed" value="true" />
+      <created>1747255728696</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1747255728696</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
