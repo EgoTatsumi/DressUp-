@@ -7,6 +7,8 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
 from sqlalchemy.orm import joinedload
+from sqlalchemy import or_
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
@@ -61,9 +63,20 @@ def unauthorized_callback():
         return redirect(url_for('login'))
 
 
-@app.route("/")
+@app.route('/', methods=["GET"])
 def main_page():
-    products = Product.query.all()
+    query = request.args.get('q', '').strip()
+
+    if query:
+        products = Product.query.filter(
+            or_(
+                Product.name.ilike(f"%{query}%"),
+                Product.description.ilike(f"%{query}%")
+            )
+        ).all()
+    else:
+        products = Product.query.all()
+
     return render_template('index1.html', products=products)
 
 @app.route('/add-to-cart', methods=['POST'])

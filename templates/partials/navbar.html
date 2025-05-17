@@ -25,9 +25,15 @@
              href="{{ url_for('orders') }}">My orders</a>
         </li>
       </ul>
-      <form role="search">
-        <input class="form-control fs-6" type="search" placeholder="Search" aria-label="Search">
-      </form>
+      <form role="search" method="GET" action="{{ url_for('main_page') }}">
+  <input class="form-control fs-6"
+         type="search"
+         name="q"
+         placeholder="Search"
+         aria-label="Search"
+         value="{{ request.args.get('q', '') }}">
+</form>
+
     </div>
   </div>
 </nav>
