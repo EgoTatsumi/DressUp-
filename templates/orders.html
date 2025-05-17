@@ -45,6 +45,23 @@
         --bs-table-striped-bg: var(--bs-tertiary-bg);
         --bs-table-hover-bg: var(--bs-secondary-bg);
       }
+
+      .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
     </style>
   </head>
   <body>
@@ -84,10 +101,10 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {% set total = 0 %}
+                      {% set order_total = namespace(value=0) %}
                       {% for item in order.items %}
                         {% set subtotal = item.quantity * item.product.price %}
-                        {% set total = total + subtotal %}
+                        {% set order_total.value = order_total.value + subtotal %}
                         <tr>
                           <td>
                             <img src="{{ url_for('static', filename='images/' + item.product.image) }}"
@@ -109,7 +126,7 @@
 
               <div class="card-footer order-summary d-flex justify-content-between">
                 <span><strong>Total items:</strong> {{ order.items | sum(attribute='quantity') }}</span>
-                <span><strong>Total cost:</strong> ${{ "%.2f"|format(total) }}</span>
+                <span><strong>Total cost:</strong> ${{ "%.2f"|format(order_total.value) }}</span>
               </div>
             </div>
           </div>
