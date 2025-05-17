@@ -11,8 +11,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'u398hf@8euf98h23r9fuh23rh9fuh23rhf'
-# import os
-# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key')
 
 db.init_app(app)
 login_manager = LoginManager()
