@@ -1,8 +1,5 @@
 from flask import Flask, url_for, render_template, request, redirect, flash, jsonify, session
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import select
 from data import Product, User, db, Order, OrderItem
-import requests
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
