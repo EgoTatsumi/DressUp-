@@ -83,9 +83,13 @@
                       </div>
                       <div class="text-end">
                         <span class="fw-bold">${{ '%.2f'|format(subtotal) }}</span>
-                        <form action="{{ url_for('remove_item', id=product['id']) }}" method="POST" style="display:inline;">
-                          <button type="submit" class="btn btn-sm btn-outline-danger remove-item">×</button>
-                        </form>
+                        <form action="{{ url_for('remove_item') }}" method="POST" style="display:inline;">
+  <input type="hidden" name="product_id" value="{{ product['id'] }}">
+  <input type="hidden" name="size" value="{{ product['size'] }}">
+  <input type="hidden" name="color" value="{{ product['color'].strip() }}">
+  <button type="submit" class="btn btn-sm btn-outline-danger remove-item">×</button>
+</form>
+
                       </div>
                     </div>
                   </li>

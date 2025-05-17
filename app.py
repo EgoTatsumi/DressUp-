@@ -215,12 +215,25 @@ def minus(id):
     session['cart'] = cart
     return redirect(url_for('cart'))
 
-@app.route('/cart/remove/<int:id>', methods=["POST"])
-def remove_item(id):
+@app.route('/cart/remove', methods=["POST"])
+def remove_item():
+    product_id = int(request.form.get('product_id'))
+    size = request.form.get('size', '').strip()
+    color = request.form.get('color', '').strip()
+
     cart = session.get('cart', [])
-    cart = [item for item in cart if item['product_id'] != id]
-    session['cart'] = cart
+    updated_cart = []
+
+    for item in cart:
+        if (item['product_id'] == product_id and
+            item.get('size') == size and
+            item.get('color', '').strip() == color):
+            continue
+        updated_cart.append(item)
+
+    session['cart'] = updated_cart
     return redirect(url_for('cart'))
+
 
 
 
